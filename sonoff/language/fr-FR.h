@@ -28,7 +28,7 @@
  * Use online command StateText to translate ON, OFF, HOLD and TOGGLE.
  * Use online command Prefix to translate cmnd, stat and tele.
  *
- * Updated until v6.1.1.7
+ * Updated until v6.3.0.17
 \*********************************************************************/
 
 #define LANGUAGE_MODULE_NAME         // Enable to display "Module Generic" (ie Spanish), Disable to display "Generic Module" (ie English)
@@ -65,7 +65,7 @@
 #define D_BY "par"                    // Written by me
 #define D_BYTES "Bytes"
 #define D_CELSIUS "Celsius"
-#define D_CHANNEL "Channel"
+#define D_CHANNEL "Canal"
 #define D_CO2 "Dioxyde de carbone"
 #define D_CODE "code"                // Button code
 #define D_COLDLIGHT "Froid"
@@ -122,16 +122,17 @@
 #define D_ONLINE "Connecté"
 #define D_PASSWORD "Mot de passe"
 #define D_PORT "Port"
-#define D_POWER_FACTOR "Facteur de puissance"
+#define D_POWER_FACTOR "Fact de puiss"
 #define D_POWERUSAGE "Puissance"
-#define D_POWERUSAGE_ACTIVE "Puissance Active"
-#define D_POWERUSAGE_APPARENT "Puissance Apparente"
-#define D_POWERUSAGE_REACTIVE "Puissance Réactive"
+#define D_POWERUSAGE_ACTIVE "Puiss act"
+#define D_POWERUSAGE_APPARENT "Puiss app"
+#define D_POWERUSAGE_REACTIVE "Puiss réactive"
 #define D_PRESSURE "Pression"
 #define D_PRESSUREATSEALEVEL "PressionMer"
 #define D_PROGRAM_FLASH_SIZE "Taille Flash Programme"
 #define D_PROGRAM_SIZE "Taille programme"
 #define D_PROJECT "Projet"
+#define D_RAIN "Pluie"
 #define D_RECEIVED "Reçu"
 #define D_RESTART "Redémarrage"
 #define D_RESTARTING "Redémarre"
@@ -163,9 +164,18 @@
 #define D_USER "Utilisateur"
 #define D_UTC_TIME "UTC"
 #define D_UV_INDEX "Indice UV"
+#define D_UV_INDEX_1 "Faible"
+#define D_UV_INDEX_2 "Modéré"
+#define D_UV_INDEX_3 "Élevé"
+#define D_UV_INDEX_4 "Très élevé"
+#define D_UV_INDEX_5 "Brûlure niv.1/2"
+#define D_UV_INDEX_6 "Brûlure niv.3"
+#define D_UV_INDEX_7 "Hors échelle"
 #define D_UV_LEVEL "Niveau UV"
+#define D_UV_POWER "Puissance UV"
 #define D_VERSION "Version"
 #define D_VOLTAGE "Tension"
+#define D_WEIGHT "Poids"
 #define D_WARMLIGHT "Chaud"
 #define D_WEB_SERVER "Serveur web"
 
@@ -176,7 +186,7 @@
 #define D_SERIAL_LOGGING_DISABLED "Journalisation série désactivée"
 #define D_SYSLOG_LOGGING_REENABLED "Jounalisation syslog réactivée"
 
-#define D_SET_BAUDRATE_TO "Définir baudrate à"
+#define D_SET_BAUDRATE_TO "Définir le débit à"
 #define D_RECEIVED_TOPIC "Topic reçu"  // Terme MQTT
 #define D_DATA_SIZE "Taille données"
 #define D_ANALOG_INPUT "Analogique"
@@ -235,7 +245,7 @@
 #define D_CONFIGURE_DOMOTICZ "Configuration Domoticz"
 #define D_CONFIGURE_LOGGING "Configuration du journal"
 #define D_CONFIGURE_OTHER "Autre configuration"
-#define D_CONFIRM_RESET_CONFIGURATION "Confirmer réinitialisation configuration"
+#define D_CONFIRM_RESET_CONFIGURATION "Confirmer la réinit. de la config."
 #define D_RESET_CONFIGURATION "Configuration par défaut"
 #define D_BACKUP_CONFIGURATION "Sauvegarde de la config."
 #define D_RESTORE_CONFIGURATION "Restauration de la config."
@@ -447,6 +457,29 @@
 #define D_GY_AXIS "Gyro Axe-Y"
 #define D_GZ_AXIS "Gyro Axe-Z"
 
+// xsns_34_hx711.ino
+#define D_HX_CAL_REMOVE "Retirer la charge"
+#define D_HX_CAL_REFERENCE "Charger l'étalon de poids"
+#define D_HX_CAL_DONE "Étalonné"
+#define D_HX_CAL_FAIL "L'étalonnage a échoué"
+#define D_RESET_HX711 "Réinitialiser le capteur"
+#define D_CONFIGURE_HX711 "Configurer le capteur"
+#define D_HX711_PARAMETERS "Paramètres capteur"
+#define D_ITEM_WEIGHT "Poids de l'objet"
+#define D_REFERENCE_WEIGHT "Poids de référence"
+#define D_CALIBRATE "Étalonner"
+#define D_CALIBRATION "Étalonnage"
+
+//xsns_35_tx20.ino
+#define D_TX20_WIND_DIRECTION "Direction du vent"
+#define D_TX20_WIND_SPEED "Vitesse du vent"
+#define D_TX20_WIND_SPEED_AVG "Vitesse Moy."
+#define D_TX20_WIND_SPEED_MAX "Vitesse Max"
+#define D_TX20_NORTH "N"
+#define D_TX20_EAST "E"
+#define D_TX20_SOUTH "S"
+#define D_TX20_WEST "O"
+
 // sonoff_template.h
 #define D_SENSOR_NONE     "Aucun"
 #define D_SENSOR_DHT11    "DHT11"
@@ -456,6 +489,7 @@
 #define D_SENSOR_I2C_SCL  "I2C SCL"
 #define D_SENSOR_I2C_SDA  "I2C SDA"
 #define D_SENSOR_WS2812   "WS2812"
+#define D_SENSOR_DFR562   "MP3 Player"
 #define D_SENSOR_IRSEND   "ÉmetIR"
 #define D_SENSOR_SWITCH   "Inter."     // Suffix "1"
 #define D_SENSOR_BUTTON   "Bouton"     // Suffix "1"
@@ -466,32 +500,55 @@
 #define D_SENSOR_IRRECV   "RécptIR"
 #define D_SENSOR_MHZ_RX   "MHZ Rx"
 #define D_SENSOR_MHZ_TX   "MHZ Tx"
-#define D_SENSOR_PZEM_RX  "PZEM Rx"
-#define D_SENSOR_PZEM_TX  "PZEM Tx"
+#define D_SENSOR_PZEM004_RX  "PZEM004 Rx"
+#define D_SENSOR_PZEM016_RX  "PZEM016 Rx"
+#define D_SENSOR_PZEM017_RX  "PZEM017 Rx"
+#define D_SENSOR_PZEM0XX_TX  "PZEM0XX Tx"
 #define D_SENSOR_SAIR_RX  "SAir Rx"
 #define D_SENSOR_SAIR_TX  "SAir Tx"
 #define D_SENSOR_SPI_CS   "SPI CS"
 #define D_SENSOR_SPI_DC   "SPI DC"
 #define D_SENSOR_BACKLIGHT "RétroÉcl"
 #define D_SENSOR_PMS5003  "PMS5003"
-#define D_SENSOR_SDS0X1   "SDS0X1"
+#define D_SENSOR_SDS0X1_RX "SDS0X1 Rx"
+#define D_SENSOR_SDS0X1_TX "SDS0X1 Tx"
 #define D_SENSOR_SBR_RX   "SerBr Rx"
 #define D_SENSOR_SBR_TX   "SerBr Tx"
 #define D_SENSOR_SR04_TRIG "SR04 Tri"
 #define D_SENSOR_SR04_ECHO "SR04 Ech"
-#define D_SENSOR_SDM120_TX "SDM120 Tx"
-#define D_SENSOR_SDM120_RX "SDM120 Rx"
+#define D_SENSOR_SDM120_TX "SDM120/220 Tx"
+#define D_SENSOR_SDM120_RX "SDM120/220 Rx"
 #define D_SENSOR_SDM630_TX "SDM630 Tx"
 #define D_SENSOR_SDM630_RX "SDM630 Rx"
 #define D_SENSOR_TM1638_CLK "TM16 CLK"
 #define D_SENSOR_TM1638_DIO "TM16 DIO"
 #define D_SENSOR_TM1638_STB "TM16 STB"
+#define D_SENSOR_HX711_SCK "HX711 SCK"
+#define D_SENSOR_HX711_DAT "HX711 DAT"
+#define D_SENSOR_TX20_TX "TX20"
+#define D_SENSOR_RFSEND "RFSend"
+#define D_SENSOR_RFRECV "RFrecv"
+#define D_SENSOR_TUYA_TX "Tuya Tx"
+#define D_SENSOR_TUYA_RX "Tuya Rx"
+#define D_SENSOR_MGC3130_XFER "MGC3130 Xfer"
+#define D_SENSOR_MGC3130_RESET "MGC3130 Reset"
+#define D_SENSOR_SSPI_MISO "SSPI MISO"
+#define D_SENSOR_SSPI_MOSI "SSPI MOSI"
+#define D_SENSOR_SSPI_SCLK "SSPI SCLK"
+#define D_SENSOR_SSPI_CS   "SSPI CS"
+#define D_SENSOR_SSPI_DC   "SSPI DC"
+#define D_SENSOR_RF_SENSOR "RF Sensor"
+#define D_SENSOR_AZ_RX   "AZ Rx"
+#define D_SENSOR_AZ_TX   "AZ Tx"
 
 // Units
 #define D_UNIT_AMPERE "A"
 #define D_UNIT_CENTIMETER "cm"
 #define D_UNIT_HERTZ "Hz"
 #define D_UNIT_HOUR "h"
+#define D_UNIT_INCREMENTS "inc"
+#define D_UNIT_KILOGRAM "kg"
+#define D_UNIT_KILOMETER_PER_HOUR "km/h"
 #define D_UNIT_KILOOHM "kΩ"
 #define D_UNIT_KILOWATTHOUR "kWh"
 #define D_UNIT_LUX "lx"
@@ -499,6 +556,8 @@
 #define D_UNIT_MICROMETER "µm"
 #define D_UNIT_MICROSECOND "µs"
 #define D_UNIT_MILLIAMPERE "mA"
+#define D_UNIT_MILLIMETER "mm"
+#define D_UNIT_MILLIMETER_MERCURY "mmHg"
 #define D_UNIT_MILLISECOND "ms"
 #define D_UNIT_MINUTE "Min"
 #define D_UNIT_PARTS_PER_BILLION "ppb"
@@ -512,6 +571,7 @@
 #define D_UNIT_VOLT "V"
 #define D_UNIT_WATT "W"
 #define D_UNIT_WATTHOUR "Wh"
+#define D_UNIT_WATT_METER_QUADRAT "W/m²"
 
 // Log message prefix
 #define D_LOG_APPLICATION "APP: "  // Application
@@ -537,5 +597,15 @@
 #define D_LOG_UPLOAD "UPL: "       // Upload
 #define D_LOG_UPNP "UPP: "         // UPnP
 #define D_LOG_WIFI "WIF: "         // Wifi
+
+//SDM220
+#define D_PHASE_ANGLE     "Angle de phase"
+#define D_IMPORT_ACTIVE   "Puiss act conso"
+#define D_EXPORT_ACTIVE   "Puiss act fournie"
+#define D_IMPORT_REACTIVE "Puiss réa conso"
+#define D_EXPORT_REACTIVE "Puiss réa fournie"
+#define D_TOTAL_REACTIVE  "Puiss réa totale"
+#define D_UNIT_KWARH      "kVArh"
+#define D_UNIT_ANGLE      "°"
 
 #endif  // _LANGUAGE_FR_FR_H_

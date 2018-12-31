@@ -24,6 +24,8 @@
  * Uses GPIO TM16 DIO, TM16 CLK and TM16 STB
 \*********************************************************************************************/
 
+#define XSNS_28             28
+
 #define TM1638_COLOR_NONE   0
 #define TM1638_COLOR_RED    1
 #define TM1638_COLOR_GREEN  2
@@ -70,7 +72,7 @@ void TM16XXSendData(byte address, byte data)
   digitalWrite(tm1638_strobe_pin, HIGH);
 }
 
-byte Tm16XXReceive()
+byte Tm16XXReceive(void)
 {
   byte temp = 0;
 
@@ -94,7 +96,7 @@ byte Tm16XXReceive()
 
 /*********************************************************************************************/
 
-void Tm16XXClearDisplay()
+void Tm16XXClearDisplay(void)
 {
   for (int i = 0; i < tm1638_displays; i++) {
     TM16XXSendData(i << 1, 0);
@@ -123,7 +125,7 @@ void Tm1638SetLEDs(word leds)
   }
 }
 
-byte Tm1638GetButtons()
+byte Tm1638GetButtons(void)
 {
   byte keys = 0;
 
@@ -139,7 +141,7 @@ byte Tm1638GetButtons()
 
 /*********************************************************************************************/
 
-void TmInit()
+void TmInit(void)
 {
   tm1638_type = 0;
   if ((pin[GPIO_TM16CLK] < 99) && (pin[GPIO_TM16DIO] < 99) && (pin[GPIO_TM16STB] < 99)) {
@@ -169,13 +171,13 @@ void TmInit()
   }
 }
 
-void TmLoop()
+void TmLoop(void)
 {
   if (tm1638_state) {
     byte buttons = Tm1638GetButtons();
     for (byte i = 0; i < MAX_SWITCHES; i++) {
-      virtualswitch[i] = (buttons &1) ^1;
-      byte color = (virtualswitch[i]) ? TM1638_COLOR_NONE : TM1638_COLOR_RED;
+      SwitchSetVirtual(i, (buttons &1) ^1);
+      byte color = (SwitchGetVirtual(i)) ? TM1638_COLOR_NONE : TM1638_COLOR_RED;
       Tm1638SetLED(color, i);
       buttons >>= 1;
     }
@@ -195,8 +197,6 @@ void TmShow(boolean json)
 /*********************************************************************************************\
  * Interface
 \*********************************************************************************************/
-
-#define XSNS_28
 
 boolean Xsns28(byte function)
 {

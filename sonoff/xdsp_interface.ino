@@ -17,7 +17,14 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#ifdef USE_DISPLAY
+
+#ifdef XFUNC_PTR_IN_ROM
 boolean (* const xdsp_func_ptr[])(byte) PROGMEM = {   // Display Function Pointers
+#else
+boolean (* const xdsp_func_ptr[])(byte) = {   // Display Function Pointers
+#endif
+
 #ifdef XDSP_01
   &Xdsp01,
 #endif
@@ -107,7 +114,7 @@ const uint8_t xdsp_present = sizeof(xdsp_func_ptr) / sizeof(xdsp_func_ptr[0]);  
  * FUNC_DISPLAY_ONOFF
 \*********************************************************************************************/
 
-uint8_t XdspPresent()
+uint8_t XdspPresent(void)
 {
   return xdsp_present;
 }
@@ -118,8 +125,13 @@ boolean XdspCall(byte Function)
 
   for (byte x = 0; x < xdsp_present; x++) {
     result = xdsp_func_ptr[x](Function);
-    if (result) break;
+
+    if (result && (FUNC_DISPLAY_MODEL == Function)) {
+      break;
+    }
   }
 
   return result;
 }
+
+#endif  // USE_DISPLAY

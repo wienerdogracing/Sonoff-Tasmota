@@ -20,8 +20,10 @@
 #if defined(USE_I2C) || defined(USE_SPI)
 #ifdef USE_DISPLAY
 
+#define XDRV_13                13
+
 #define DISPLAY_MAX_DRIVERS    16           // Max number of display drivers/models supported by xdsp_interface.ino
-#define DISPLAY_MAX_COLS       40           // Max number of columns allowed with command DisplayCols
+#define DISPLAY_MAX_COLS       44           // Max number of columns allowed with command DisplayCols
 #define DISPLAY_MAX_ROWS       32           // Max number of lines allowed with command DisplayRows
 
 #define DISPLAY_LOG_ROWS       32           // Number of lines in display log buffer
@@ -49,10 +51,10 @@ enum XdspFunctions { FUNC_DISPLAY_INIT_DRIVER, FUNC_DISPLAY_INIT, FUNC_DISPLAY_E
 
 enum DisplayInitModes { DISPLAY_INIT_MODE, DISPLAY_INIT_PARTIAL, DISPLAY_INIT_FULL };
 
-enum DisplayCommands { CMND_DISP_MODEL, CMND_DISP_MODE, CMND_DISP_REFRESH, CMND_DISP_DIMMER, CMND_DISP_COLS, CMND_DISP_ROWS,
+enum DisplayCommands { CMND_DISPLAY, CMND_DISP_MODEL, CMND_DISP_MODE, CMND_DISP_REFRESH, CMND_DISP_DIMMER, CMND_DISP_COLS, CMND_DISP_ROWS,
   CMND_DISP_SIZE, CMND_DISP_FONT, CMND_DISP_ROTATE, CMND_DISP_TEXT, CMND_DISP_ADDRESS };
 const char kDisplayCommands[] PROGMEM =
-  D_CMND_DISP_MODEL "|" D_CMND_DISP_MODE "|" D_CMND_DISP_REFRESH "|" D_CMND_DISP_DIMMER "|" D_CMND_DISP_COLS "|" D_CMND_DISP_ROWS "|"
+  "|" D_CMND_DISP_MODEL "|" D_CMND_DISP_MODE "|" D_CMND_DISP_REFRESH "|" D_CMND_DISP_DIMMER "|" D_CMND_DISP_COLS "|" D_CMND_DISP_ROWS "|"
   D_CMND_DISP_SIZE "|" D_CMND_DISP_FONT "|" D_CMND_DISP_ROTATE "|" D_CMND_DISP_TEXT "|" D_CMND_DISP_ADDRESS ;
 
 const char S_JSON_DISPLAY_COMMAND_VALUE[] PROGMEM =        "{\"" D_CMND_DISPLAY "%s\":\"%s\"}";
@@ -104,7 +106,7 @@ void DisplayInit(uint8_t mode)
   XdspCall(FUNC_DISPLAY_INIT);
 }
 
-void DisplayClear()
+void DisplayClear(void)
 {
   XdspCall(FUNC_DISPLAY_CLEAR);
 }
@@ -175,7 +177,7 @@ void DisplayDrawFilledRectangle(uint16_t x, uint16_t y, uint16_t x2, uint16_t y2
   XdspCall(FUNC_DISPLAY_FILL_RECTANGLE);
 }
 
-void DisplayDrawFrame()
+void DisplayDrawFrame(void)
 {
   XdspCall(FUNC_DISPLAY_DRAW_FRAME);
 }
@@ -252,7 +254,7 @@ uint8_t atoiV(char *cp, uint16_t *res)
 
 #define DISPLAY_BUFFER_COLS    128          // Max number of characters in linebuf
 
-void DisplayText()
+void DisplayText(void)
 {
   uint8_t lpos;
   uint8_t escape = 0;
@@ -485,7 +487,7 @@ void DisplayText()
 
 #ifdef USE_DISPLAY_MODES1TO5
 
-void DisplayClearScreenBuffer()
+void DisplayClearScreenBuffer(void)
 {
   if (disp_screen_buffer_cols) {
     for (byte i = 0; i < disp_screen_buffer_rows; i++) {
@@ -494,7 +496,7 @@ void DisplayClearScreenBuffer()
   }
 }
 
-void DisplayFreeScreenBuffer()
+void DisplayFreeScreenBuffer(void)
 {
   if (disp_screen_buffer != NULL) {
     for (byte i = 0; i < disp_screen_buffer_rows; i++) {
@@ -506,7 +508,7 @@ void DisplayFreeScreenBuffer()
   }
 }
 
-void DisplayAllocScreenBuffer()
+void DisplayAllocScreenBuffer(void)
 {
   if (!disp_screen_buffer_cols) {
     disp_screen_buffer_rows = Settings.display_rows;
@@ -527,7 +529,7 @@ void DisplayAllocScreenBuffer()
   }
 }
 
-void DisplayReAllocScreenBuffer()
+void DisplayReAllocScreenBuffer(void)
 {
   DisplayFreeScreenBuffer();
   DisplayAllocScreenBuffer();
@@ -544,7 +546,7 @@ void DisplayFillScreen(uint8_t line)
 
 /*-------------------------------------------------------------------------------------------*/
 
-void DisplayClearLogBuffer()
+void DisplayClearLogBuffer(void)
 {
   if (disp_log_buffer_cols) {
     for (byte i = 0; i < DISPLAY_LOG_ROWS; i++) {
@@ -553,7 +555,7 @@ void DisplayClearLogBuffer()
   }
 }
 
-void DisplayFreeLogBuffer()
+void DisplayFreeLogBuffer(void)
 {
   if (disp_log_buffer != NULL) {
     for (byte i = 0; i < DISPLAY_LOG_ROWS; i++) {
@@ -564,7 +566,7 @@ void DisplayFreeLogBuffer()
   }
 }
 
-void DisplayAllocLogBuffer()
+void DisplayAllocLogBuffer(void)
 {
   if (!disp_log_buffer_cols) {
     disp_log_buffer = (char**)malloc(sizeof(*disp_log_buffer) * DISPLAY_LOG_ROWS);
@@ -584,7 +586,7 @@ void DisplayAllocLogBuffer()
   }
 }
 
-void DisplayReAllocLogBuffer()
+void DisplayReAllocLogBuffer(void)
 {
   DisplayFreeLogBuffer();
   DisplayAllocLogBuffer();
@@ -615,7 +617,7 @@ char* DisplayLogBuffer(char temp_code)
   return result;
 }
 
-void DisplayLogBufferInit()
+void DisplayLogBufferInit(void)
 {
   if (Settings.display_mode) {
     disp_log_buffer_idx = 0;
@@ -626,11 +628,24 @@ void DisplayLogBufferInit()
 
     DisplayReAllocLogBuffer();
 
-    char buffer[20];
-    snprintf_P(buffer, sizeof(buffer), PSTR(D_VERSION " %s"), my_version);
+    char buffer[40];
+    snprintf_P(buffer, sizeof(buffer), PSTR(D_VERSION " %s%s"), my_version, my_image);
     DisplayLogBufferAdd(buffer);
     snprintf_P(buffer, sizeof(buffer), PSTR("Display mode %d"), Settings.display_mode);
     DisplayLogBufferAdd(buffer);
+
+    snprintf_P(buffer, sizeof(buffer), PSTR(D_CMND_HOSTNAME " %s"), my_hostname);
+    DisplayLogBufferAdd(buffer);
+    snprintf_P(buffer, sizeof(buffer), PSTR(D_JSON_SSID " %s"), Settings.sta_ssid[Settings.sta_active]);
+    DisplayLogBufferAdd(buffer);
+    snprintf_P(buffer, sizeof(buffer), PSTR(D_JSON_MAC " %s"), WiFi.macAddress().c_str());
+    DisplayLogBufferAdd(buffer);
+    if (!global_state.wifi_down) {
+      snprintf_P(buffer, sizeof(buffer), PSTR("IP %s"), WiFi.localIP().toString().c_str());
+      DisplayLogBufferAdd(buffer);
+      snprintf_P(buffer, sizeof(buffer), PSTR(D_JSON_RSSI " %d%%"), WifiGetRssiAsQuality(WiFi.RSSI()));
+      DisplayLogBufferAdd(buffer);
+    }
   }
 }
 
@@ -650,7 +665,8 @@ enum SensorQuantity {
   JSON_CURRENT,
   JSON_VOLTAGE,
   JSON_POWERUSAGE,
-  JSON_CO2 };
+  JSON_CO2,
+  JSON_FREQUENCY };
 const char kSensorQuantity[] PROGMEM =
   D_JSON_TEMPERATURE "|"                                                        // degrees
   D_JSON_HUMIDITY "|" D_JSON_LIGHT "|" D_JSON_NOISE "|" D_JSON_AIRQUALITY "|"   // percentage
@@ -663,7 +679,8 @@ const char kSensorQuantity[] PROGMEM =
   D_JSON_CURRENT "|"                                                            // Ampere
   D_JSON_VOLTAGE "|"                                                            // Volt
   D_JSON_POWERUSAGE "|"                                                         // Watt
-  D_JSON_CO2 ;                                                                  // ppm
+  D_JSON_CO2 "|"                                                                // ppm
+  D_JSON_FREQUENCY ;                                                            // Hz
 
 void DisplayJsonValue(const char *topic, const char* device, const char* mkey, const char* value)
 {
@@ -718,6 +735,9 @@ void DisplayJsonValue(const char *topic, const char* device, const char* mkey, c
   }
   else if (JSON_CO2 == quantity_code) {
     snprintf_P(svalue, sizeof(svalue), PSTR("%s" D_UNIT_PARTS_PER_MILLION), value);
+  }
+  else if (JSON_FREQUENCY == quantity_code) {
+    snprintf_P(svalue, sizeof(svalue), PSTR("%s" D_UNIT_HERTZ), value);
   }
   snprintf_P(buffer, sizeof(buffer), PSTR("%s %s"), source, svalue);
 
@@ -778,7 +798,7 @@ void DisplayAnalyzeJson(char *topic, char *json)
   }
 }
 
-void DisplayMqttSubscribe()
+void DisplayMqttSubscribe(void)
 {
 /* Subscribe to tele messages only
  * Supports the following FullTopic formats
@@ -799,11 +819,11 @@ void DisplayMqttSubscribe()
       if (!strcmp_P(tp, PSTR(MQTT_TOKEN_PREFIX))) {
         break;
       }
-      strncat_P(ntopic, PSTR("+/"), sizeof(ntopic));           // Add single-level wildcards
+      strncat_P(ntopic, PSTR("+/"), sizeof(ntopic) - strlen(ntopic) -1);           // Add single-level wildcards
       tp = strtok(NULL, "/");
     }
-    strncat(ntopic, Settings.mqtt_prefix[2], sizeof(ntopic));  // Subscribe to tele messages
-    strncat_P(ntopic, PSTR("/#"), sizeof(ntopic));             // Add multi-level wildcard
+    strncat(ntopic, Settings.mqtt_prefix[2], sizeof(ntopic) - strlen(ntopic) -1);  // Subscribe to tele messages
+    strncat_P(ntopic, PSTR("/#"), sizeof(ntopic) - strlen(ntopic) -1);             // Add multi-level wildcard
     MqttSubscribe(ntopic);
     disp_subscribed = 1;
   } else {
@@ -811,7 +831,7 @@ void DisplayMqttSubscribe()
   }
 }
 
-boolean DisplayMqttData()
+boolean DisplayMqttData(void)
 {
   if (disp_subscribed) {
     char stopic[TOPSZ];
@@ -830,7 +850,7 @@ boolean DisplayMqttData()
   return false;
 }
 
-void DisplayLocalSensor()
+void DisplayLocalSensor(void)
 {
   if ((Settings.display_mode &0x02) && (0 == tele_period)) {
     DisplayAnalyzeJson(mqtt_topic, mqtt_data);
@@ -843,7 +863,7 @@ void DisplayLocalSensor()
  * Public
 \*********************************************************************************************/
 
-void DisplayInitDriver()
+void DisplayInitDriver(void)
 {
   XdspCall(FUNC_DISPLAY_INIT_DRIVER);
 
@@ -862,7 +882,7 @@ void DisplayInitDriver()
   }
 }
 
-void DisplaySetPower()
+void DisplaySetPower(void)
 {
   disp_power = bitRead(XdrvMailbox.index, disp_device -1);
   if (Settings.display_model) {
@@ -874,7 +894,7 @@ void DisplaySetPower()
  * Commands
 \*********************************************************************************************/
 
-boolean DisplayCommand()
+boolean DisplayCommand(void)
 {
   char command [CMDSZ];
   boolean serviced = true;
@@ -884,6 +904,12 @@ boolean DisplayCommand()
     int command_code = GetCommandCode(command, sizeof(command), XdrvMailbox.topic +disp_len, kDisplayCommands);
     if (-1 == command_code) {
       serviced = false;  // Unknown command
+    }
+    else if (CMND_DISPLAY == command_code) {
+      snprintf_P(mqtt_data, sizeof(mqtt_data), PSTR("{\"" D_CMND_DISPLAY "\":{\"" D_CMND_DISP_MODEL "\":%d,\"" D_CMND_DISP_MODE "\":%d,\"" D_CMND_DISP_DIMMER "\":%d,\""
+         D_CMND_DISP_SIZE "\":%d,\"" D_CMND_DISP_FONT "\":%d,\"" D_CMND_DISP_ROTATE "\":%d,\"" D_CMND_DISP_REFRESH "\":%d,\"" D_CMND_DISP_COLS "\":[%d,%d],\"" D_CMND_DISP_ROWS "\":%d}}"),
+        Settings.display_model, Settings.display_mode, Settings.display_dimmer, Settings.display_size, Settings.display_font, Settings.display_rotate, Settings.display_refresh,
+        Settings.display_cols[0], Settings.display_cols[1], Settings.display_rows);
     }
     else if (CMND_DISP_MODEL == command_code) {
       if ((XdrvMailbox.payload >= 0) && (XdrvMailbox.payload < DISPLAY_MAX_DRIVERS)) {
@@ -915,8 +941,8 @@ boolean DisplayCommand()
           if (last_display_mode && !Settings.display_mode) {  // Switch to mode 0
             DisplayInit(DISPLAY_INIT_MODE);
             DisplayClear();
-          }
-          if (!last_display_mode && Settings.display_mode) {  // Switch to non mode 0
+          } else {
+//          if (!last_display_mode && Settings.display_mode) {  // Switch to non mode 0
             DisplayLogBufferInit();
             DisplayInit(DISPLAY_INIT_MODE);
           }
@@ -1036,13 +1062,11 @@ boolean DisplayCommand()
  * Interface
 \*********************************************************************************************/
 
-#define XDRV_13
-
 boolean Xdrv13(byte function)
 {
   boolean result = false;
 
-  if ((i2c_flg || spi_flg) && XdspPresent()) {
+  if ((i2c_flg || spi_flg || soft_spi_flg) && XdspPresent()) {
     switch (function) {
       case FUNC_PRE_INIT:
         DisplayInitDriver();
